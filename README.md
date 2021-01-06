@@ -12,7 +12,7 @@ PHP 게시판 (학습용)
 
 ## 개발정보
 - 언어 : PHP 7.2.34 , JavaScript(ES5) , HTML5 , CSS3 , MariaDB SQL
-- WABSERVER : Apache 2.4.46
+- WEBSERVER : Apache 2.4.46
 - DBMS : MariaDB 10.4.14
 - UI FrameWork : Bootstrap 4.3.1
 - Lib : jQurey3.3.1

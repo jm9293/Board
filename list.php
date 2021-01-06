@@ -73,7 +73,7 @@ if(!$conn){ // 커넥션 오류시
 
     $query = "SELECT count(*) FROM POST".$whereQuery; // 게시글 개수 확인 쿼리
 
-    echo $query; // 쿼리문 테스트
+
 
     $result = mysqli_query($conn, $query); // 쿼리전송후 결과받음
 
@@ -87,7 +87,7 @@ if(!$conn){ // 커넥션 오류시
         $query = "SELECT NUM, USERNAME, TITLE, VIEWCOUNT, WRDATE FROM POST".$whereQuery.
             " ORDER BY NUM DESC LIMIT ".($pageNum-1)*$pageRow.", $pageRow"; // 페이징을 이용한 select 쿼리문
 
-        echo $query; // 쿼리문 테스트
+
 
         $result = mysqli_query($conn, $query); // 쿼리전송후 결과받음
 
@@ -149,11 +149,11 @@ if(!$conn){ // 커넥션 오류시
         <div class="col-10 col-md-3 menu">작성일</div>
     </div>
     <?php
-    if($result) {
+    if($result && mysqli_num_rows($result) > 0) {
         while ($row = mysqli_fetch_assoc($result)) { //전체 select 된 row 만큼 반복한다.
 
             ?>
-            <div class="menuname textarea row col-12 col-md-8 textlist" onclick="location.href='./postview.php?<?php echo $urlQuery."num=".$row["NUM"]; //클릭시 해당글로이동 ?> '">
+            <div class="menuname row col-12 col-md-8 textlist" onclick="location.href='./postview.php?<?php echo $urlQuery."num=".$row["NUM"]; //클릭시 해당글로이동 ?> '">
                 <div class="col-2 col-md-1 text" id="text1"><?php echo $row["NUM"] ?></div>
                 <div class="col-6 col-md-4 text" id="text2"><?php echo $row["TITLE"] ?></div>
                 <div class="col-4 col-md-2 text" id="text2"><?php echo $row["USERNAME"] ?></div>
@@ -167,8 +167,8 @@ if(!$conn){ // 커넥션 오류시
         mysqli_close($conn); // 접속종료
     }else{
         ?>
-        <div class="menuname textarea row col-12 col-md-8 textlist">
-            게시글을 찾을수 없거나 DB접속 오류입니다. 다시 시도해주세요.
+        <div class="menuname row col-12 col-md-8 textlist">
+            게시물을 찾을수 없습니다.
         </div>
     <?php
     }

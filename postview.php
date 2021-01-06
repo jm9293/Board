@@ -85,7 +85,7 @@ if(!$conn){
     <!-- 페이지 css -->
     <link href="./css/postview.css" rel="stylesheet">
 
-    <title>게시판</title>
+    <title><?php echo $row['TITLE']?></title>
 </head>
 <body>
 <!--네비바 시작-->
