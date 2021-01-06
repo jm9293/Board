@@ -17,6 +17,7 @@ if(!$conn){ // 커넥션 오류시
     $result = false;
     $type = 1;
     $text = "";
+    $urlQuery = "";
 }else{
 
     $pageRow = 10; // 한페이지에가 가져올 게시글 개수
@@ -35,12 +36,14 @@ if(!$conn){ // 커넥션 오류시
 
     $text = ""; // 검색 입력값
 
-    if(isset($_GET["type"])&&isset($_GET["text"])&&((int)isset($_GET["type"]))!=0){
+    $urlQuery = ""; //현재 파라메타 유지용 문자열
+
+    if(isset($_GET["type"])&&isset($_GET["text"])&&((int)($_GET["type"]))!=0){ // 검색에 요구되는 파라메타가 존재하고 그값이 유효할때
 
         $infotext = '"'.$_GET["text"].'"로 검색한 결과입니다.</br>';
         $type = (int)$_GET["type"];
         $text = $_GET["text"];
-
+        $urlQuery = "type=".$type."&text=".$_GET["text"]."&"; // 파라메타 저장
         switch ($type){
             case 1 :
                 $whereQuery =" WHERE TITLE LIKE '%".$text."%' OR CONTENT LIKE '%".$text."%'";
@@ -60,7 +63,13 @@ if(!$conn){ // 커넥션 오류시
     if($pageNum == 0){ // 숫자가 아닌 파라메타일 경우
         echo "파라메타 오류";
         exit();
+    }else{
+        $urlQuery.= "page=".$pageNum."&"; //파라메타유지용
     }
+
+
+
+
 
     $query = "SELECT count(*) FROM POST".$whereQuery; // 게시글 개수 확인 쿼리
 
@@ -109,9 +118,6 @@ if(!$conn){ // 커넥션 오류시
     <link href="./css/basic.css" rel="stylesheet">
     <!-- 페이지 css -->
     <link href="./css/list.css" rel="stylesheet">
-    <style>
-
-    </style>
 
     <title>게시판</title>
 </head>
@@ -147,7 +153,7 @@ if(!$conn){ // 커넥션 오류시
         while ($row = mysqli_fetch_assoc($result)) { //전체 select 된 row 만큼 반복한다.
 
             ?>
-            <div class="menuname textarea row col-12 col-md-8 textlist" onclick="location.href='./postview.php?num=<?php echo $row["NUM"] ?>'">
+            <div class="menuname textarea row col-12 col-md-8 textlist" onclick="location.href='./postview.php?<?php echo $urlQuery."num=".$row["NUM"]; //클릭시 해당글로이동 ?> '">
                 <div class="col-2 col-md-1 text" id="text1"><?php echo $row["NUM"] ?></div>
                 <div class="col-6 col-md-4 text" id="text2"><?php echo $row["TITLE"] ?></div>
                 <div class="col-4 col-md-2 text" id="text2"><?php echo $row["USERNAME"] ?></div>
@@ -186,18 +192,18 @@ if(!$conn){ // 커넥션 오류시
             ?>
 
             <li class="paging"><a
-                    href="list.php?page=<?php echo $backPage; ?>">이전</a></li>
+                    href="list.php?<?php echo $urlQuery."page=".$backPage; ?>">이전</a></li>
             <?php
             for ($i = 1 ; $i <= $maxPage ; $i++) { // 1부터 max 페이지까지 li 생성
 
                 ?>
                 <li class="paging"><a <?php if($pageNum===$i) {echo 'class = "active"' ; } // 현재페이지일 경우 a에 active 클래스를줌 ?>
-                        href="list.php?page=<?php echo $i; ?>"><?php echo $i; ?></a></li>
+                        href="list.php?<?php echo $urlQuery."page=".$i; ?>"><?php echo $i; ?></a></li>
                 <?php
             }
             ?>
             <li class="paging"><a
-                    href="list.php?page=<?php echo $frontPage; ?>">다음</a></li>
+                    href="list.php?<?php echo $urlQuery."page=".$frontPage; ?>">다음</a></li>
         </ul>
     </div>
     <form action="./list.php">

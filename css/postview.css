@@ -1,0 +1,11 @@
+@charset "utf-8";
+.text{
+    margin: 30px auto;
+}
+.btn-box{
+    text-align: right;
+}
+
+textarea.form-control[readonly] {
+    background-color: white;
+}
