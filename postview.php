@@ -9,7 +9,13 @@
 $conn = mysqli_connect("localhost" , "boardadmin", "board1234", "board", "3306"); // DB 커넥션
 
 if(!$conn){
-    echo "Error : DB 연결 오류</br>";
+    ?>
+    <script>
+        alert("입력값이 유효하지 않거나 DB 접속의 문제가 있습니다. \n전 페이지로 이동합니다.");
+        history.back();
+    </script>
+
+    <?php
     exit();
 
 }else{
@@ -56,12 +62,19 @@ if(!$conn){
 
     if($result){
         $row = mysqli_fetch_assoc($result); // ROW 추출
+        mysqli_free_result($result) ; // result 메모리 해제
+        mysqli_close($conn); // 커넥션종료
     }else{
-        echo "Error : 해당게시글 없음</br>";
+        ?>
+        <script>
+            alert("입력값이 유효하지 않거나 DB 접속의 문제가 있습니다. \n전 페이지로 이동합니다.");
+            history.back();
+        </script>
+
+        <?php
+        mysqli_close($conn); // 커넥션종료
         exit();
     }
-
-
 
 }
 
@@ -104,7 +117,14 @@ if(!$conn){
         <h2>제목 : <?php echo $row['TITLE']?></h2>
         <h6>작성자 : <?php echo $row['USERNAME']?> </h6>
         <h6>조회수 : <?php echo $row['VIEWCOUNT']?></h6>
-        <h6>작성일 : <?php echo $row['WRDATE']?> (<?php echo $row['UWDATE']?>)</h6>
+        <h6>작성일 : <?php echo $row['WRDATE']?></h6>
+        <?php
+        if($row['UWDATE']!=null) {
+            ?>
+            <h6>수정일 : <?php echo $row['UWDATE']?></h6>
+            <?php
+        }
+        ?>
     </div>
 
     <div class="col-12">
@@ -112,9 +132,34 @@ if(!$conn){
     </div>
     
     <div class="btn-box col-12">
-        <button class="btn btn-outline-primary">수정</button>
-        <button class="btn btn-outline-primary">삭제</button>
-        <button class="btn btn-outline-primary" onclick="location.href = './list.php<?php echo $urlQuery ?>'">목록으로</button>
+        <button type="button" class="btn btn-outline-primary modal-btn" data-toggle="modal" data-target="#modal" id="updateBtn">수정</button>
+        <button type="button" class="btn btn-outline-primary modal-btn" data-toggle="modal" data-target="#modal" id="delBtn">삭제</button>
+        <button type="button" class="btn btn-outline-primary" onclick="location.href = './list.php<?php echo $urlQuery ?>'">목록으로</button>
+    </div>
+
+
+    <!-- 비밀번호 입력 모달창 -->
+    <div class="modal fade" id="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="delModalLabel">비밀번호 입력</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="modalform" action="" method="post">
+                    <input type="hidden" name="num" value="<?php echo $row['NUM']?>">
+                    <div class="modal-body">
+                        <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호를 입력하세요. (10자이내)" maxlength="10" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                        <button type="submit" class="btn btn-primary">완료</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
 </div>
@@ -133,9 +178,22 @@ if(!$conn){
         function changeText() { // textarea 크기자동조절
             $(this).height(1).height( $(this).prop('scrollHeight')+12 );
         }
-
         $(".text").on("keydown keyup", changeText);
         $(".text").keyup();
+
+        $(".modal-btn").click(function () { // 수정, 삭제버튼 클릭시
+
+            switch ($(this).attr('id')) {
+                case 'delBtn' : // 삭제버튼이라면
+                    $("#modalform").attr("action", "./deleteprogress.php");
+                    break;
+                case 'updateBtn' : // 수정버튼이라면
+                    $("#modalform").attr("action", "./postupdate.php");
+                    break;
+            }
+
+        });
+
     });
 
 </script>

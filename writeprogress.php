@@ -6,11 +6,14 @@
  * Time: 오후 9:37
  */
 
-if(isset($_POST['title'])&&isset($_POST['text'])
-    &&isset($_POST['password'])&&isset($_POST['passwordChk'])){
+$success = false; // 작업 성공하였는지
+
+if(isset($_POST['title']) && isset($_POST['text'])
+    && isset($_POST['password']) && isset($_POST['passwordChk'])
+    && strlen($_POST['title'])<=30 && strlen($_POST['text'])<=300
+    && strlen($_POST['password'])<=10 && strcmp ($_POST['password'], $_POST['passwordChk']) == 0){ //파라메타 값이 유효하다면
 
 
-    //echo '<script>alert("작성가능!");</script>';
     $username = "user".$_SERVER["REMOTE_ADDR"];
     $conn = mysqli_connect("localhost" , "boardadmin", "board1234", "board", "3306"); // DB 커넥션
 
@@ -24,17 +27,27 @@ if(isset($_POST['title'])&&isset($_POST['text'])
 
     mysqli_stmt_execute($stmt);
 
+    $success = true; //작업성공
+    
+}else {
+    $success = false; //작업 실패
+}
 
-
-
-
-
-
+if($success){
     ?>
     <script>
-        alert("<?php echo mysqli_stmt_affected_rows($stmt); ?>개의 게시글 작성완료!");
+        alert("<?php echo mysqli_stmt_affected_rows($stmt); ?>개의 게시글 작성완료\n작성된 게시글로 이동합니다.");
         location.href = "./postview.php?num=<?php echo mysqli_insert_id($conn); ?>";
     </script>
-<?php
+
+    <?php
+    mysqli_close($conn); // 커넥션종료
+}else{
+    ?>
+    <script>
+        alert("입력값이 유효하지 않거나 DB 접속의 문제가 있습니다. \n전 페이지로 이동합니다.");
+        history.back();
+    </script>
+    <?php
 }
 ?>

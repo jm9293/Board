@@ -9,15 +9,13 @@
 $conn = mysqli_connect("localhost" , "boardadmin", "board1234", "board", "3306"); // DB 커넥션
 
 if(!$conn){ // 커넥션 오류시
-    // 오류방지를 위한 기본변수 선언
-    $infotext =  "Error : DB 연결 오류</br>";
-    $postCnt = 0;
-    $pageNum = 0;
-    $maxPage  = 0;
-    $result = false;
-    $type = 1;
-    $text = "";
-    $urlQuery = "";
+    ?>
+    <script>
+        alert("입력값이 유효하지 않거나 DB 접속의 문제가 있습니다. \n전 페이지로 이동합니다.");
+        history.back();
+    </script>
+    <?php
+    exit();
 }else{
 
     $pageRow = 10; // 한페이지에가 가져올 게시글 개수
@@ -61,7 +59,13 @@ if(!$conn){ // 커넥션 오류시
 
 
     if($pageNum == 0){ // 숫자가 아닌 파라메타일 경우
-        echo "파라메타 오류";
+        ?>
+        <script>
+            alert("입력값이 유효하지 않거나 DB 접속의 문제가 있습니다. \n전 페이지로 이동합니다.");
+            history.back();
+        </script>
+
+        <?php
         exit();
     }else{
         $urlQuery.= "page=".$pageNum."&"; //파라메타유지용

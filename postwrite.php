@@ -53,7 +53,7 @@
         <div class="col-12">
             <div class="mb-3">
                 <label for="text" class="form-label">내용</label>
-                <textarea class="form-control text" id="text" name = "text" maxlength="300"></textarea>
+                <textarea class="form-control text" placeholder="내용을 입력해주세요 (300자 이하)" id="text" name = "text" maxlength="300"></textarea>
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">게시글 비밀번호</label>
