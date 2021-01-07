@@ -5,22 +5,29 @@
  * Date: 2021-01-06
  * Time: 오후 9:37
  */
-
+session_start(); // 세션사용
 $success = false; // 작업 성공하였는지
 
 if(isset($_POST['num']) && isset($_POST['password'])
-    && ((int)$_POST['num'])>0 && strlen($_POST['password'])<=10){ //파라메타 값이 유효하다면
+    && ((int)$_POST['num'])>0 &&mb_strlen($_POST['password'])<=10){ //파라메타 값이 유효하다면
 
     $conn = mysqli_connect("localhost" , "boardadmin", "board1234", "board", "3306"); // DB 커넥션
 
     $num = (int)$_POST['num'];
 
-    $query ="DELETE FROM POST WHERE NUM = ? AND PASSWORD = ?"; // insert 쿼리문
+    if(isset($_SESSION["admin"])) { //관리자 로그인시 password 미검증
+        $query = "DELETE FROM POST WHERE NUM = ?"; // delete 쿼리문
+    }else{
+        $query = "DELETE FROM POST WHERE NUM = ? AND PASSWORD = ?"; // delete 쿼리문
+    }
 
     $stmt = mysqli_prepare($conn, $query); // sql injection 방지 prepare stmt 사용
 
-    mysqli_stmt_bind_param($stmt, "is", $num ,
-        $_POST['password'] ); // sql 변수에 바인딩
+    if(isset($_SESSION["admin"])){
+        mysqli_stmt_bind_param($stmt, "i", $num ); // sql 변수에 바인딩
+    }else{
+        mysqli_stmt_bind_param($stmt, "is", $num ,$_POST['password'] ); // sql 변수에 바인딩
+    }
 
     mysqli_stmt_execute($stmt);
 

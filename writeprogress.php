@@ -6,15 +6,21 @@
  * Time: 오후 9:37
  */
 
+session_start(); // 세션사용
 $success = false; // 작업 성공하였는지
 
 if(isset($_POST['title']) && isset($_POST['text'])
     && isset($_POST['password']) && isset($_POST['passwordChk'])
-    && strlen($_POST['title'])<=30 && strlen($_POST['text'])<=300
-    && strlen($_POST['password'])<=10 && strcmp ($_POST['password'], $_POST['passwordChk']) == 0){ //파라메타 값이 유효하다면
+    && mb_strlen($_POST['title'])<=30 && mb_strlen($_POST['text'])<=300
+    && mb_strlen($_POST['password'])<=10 && strcmp ($_POST['password'], $_POST['passwordChk']) == 0){ //파라메타 값이 유효하다면
 
 
-    $username = "user".$_SERVER["REMOTE_ADDR"];
+    if(isset($_SESSION["admin"])) {
+        $username = $_SESSION["admin"]; // 관리자는 id로
+    }else{
+        $username = "user". $_SERVER["REMOTE_ADDR"];// 사용자 식별은 user+ 접속 ip로
+    }
+
     $conn = mysqli_connect("localhost" , "boardadmin", "board1234", "board", "3306"); // DB 커넥션
 
     $query ="INSERT INTO POST (USERNAME, PASSWORD, TITLE, CONTENT, VIEWCOUNT, WRDATE) 

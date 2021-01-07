@@ -5,23 +5,32 @@
  * Date: 2021-01-06
  * Time: 오후 9:37
  */
-
+session_start(); // 세션사용
 $success = false; // 작업 성공하였는지
 
 if(isset($_POST['title']) && isset($_POST['text'])
     && isset($_POST['num']) && isset($_POST['password'])
-    && ((int)$_POST['num'])>0 && strlen($_POST['password'])<=10
-    && strlen($_POST['title'])<=30 && strlen($_POST['text'])<=300){ //파라메타 값이 유효하다면
+    && ((int)$_POST['num'])>0 && mb_strlen($_POST['password'])<=10
+    &&  mb_strlen($_POST['title'])<=30 &&  mb_strlen($_POST['text'])<=300){ //파라메타 값이 유효한지
 
     $conn = mysqli_connect("localhost" , "boardadmin", "board1234", "board", "3306"); // DB 커넥션
 
     $num = (int)$_POST['num'];
 
-    $query ="UPDATE POST SET TITLE = ?, CONTENT = ?, UWDATE = NOW() WHERE NUM = ? AND  PASSWORD = ?"; // insert 쿼리문
+    if(isset($_SESSION["admin"])){ //관리자 로그인시 password 미검증
+        $query ="UPDATE POST SET TITLE = ?, CONTENT = ?, UWDATE = NOW() WHERE NUM = ? "; // update 쿼리문
+    }else{
+        $query ="UPDATE POST SET TITLE = ?, CONTENT = ?, UWDATE = NOW() WHERE NUM = ? AND  PASSWORD = ?"; // update 쿼리문
+    }
+
 
     $stmt = mysqli_prepare($conn, $query); // sql injection 방지 prepare stmt 사용
 
-    mysqli_stmt_bind_param($stmt, "ssis",$_POST['title'] ,$_POST['text'], $num , $_POST['password'] ); // sql 변수에 바인딩
+    if(isset($_SESSION["admin"])){ //관리자 로그인시
+        mysqli_stmt_bind_param($stmt, "ssi",$_POST['title'] ,$_POST['text'], $num  ); // sql 변수에 바인딩
+    }else{
+        mysqli_stmt_bind_param($stmt, "ssis",$_POST['title'] ,$_POST['text'], $num , $_POST['password'] ); // sql 변수에 바인딩
+    }
 
     mysqli_stmt_execute($stmt);
 
@@ -52,6 +61,7 @@ if($success){
         <?php
     }
     mysqli_close($conn); // 커넥션종료
+    exit();
 }else{ // 파라메타 유효하지 않을때
     ?>
     <script>
@@ -59,5 +69,5 @@ if($success){
         history.back();
     </script>
     <?php
-}
+}   exit();
 ?>

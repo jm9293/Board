@@ -8,6 +8,8 @@
 
 $conn = mysqli_connect("localhost" , "boardadmin", "board1234", "board", "3306"); // DB 커넥션
 
+session_start(); // 세션사용
+
 if(!$conn){
     ?>
     <script>
@@ -21,7 +23,7 @@ if(!$conn){
 }else{
     $query = "SELECT NUM, USERNAME, TITLE, CONTENT, VIEWCOUNT , WRDATE, UWDATE FROM POST WHERE NUM = ?"; // 쿼리문작성
 
-
+    // 검색 url 유지용 코드 시작
     $urlQuery = ""; //현재 파라메타 유지용 문자열
     $seachQuery = ""; //검색용 쿼리
 
@@ -43,6 +45,7 @@ if(!$conn){
         $urlQuery = "?".$pageNumQuery;
     }
 
+    // 검색 url 유지용 코드 끝
 
     $num = 0; //파라메타 게시글 번호
 
@@ -117,11 +120,11 @@ if(!$conn){
         <h2>제목 : <?php echo $row['TITLE']?></h2>
         <h6>작성자 : <?php echo $row['USERNAME']?> </h6>
         <h6>조회수 : <?php echo $row['VIEWCOUNT']?></h6>
-        <h6>작성일 : <?php echo $row['WRDATE']?></h6>
+        <h6>작성시간 : <?php echo substr( $row["WRDATE"] , 0, strrpos($row["WRDATE"],":")); // 초단위 자르고 출력?></h6>
         <?php
-        if($row['UWDATE']!=null) {
+        if($row['UWDATE']!=null) { // 수정일이 존재한다면 출력
             ?>
-            <h6>수정일 : <?php echo $row['UWDATE']?></h6>
+            <h6>수정시간 : <?php echo substr( $row["UWDATE"] , 0, strrpos($row["UWDATE"],":"));?></h6>
             <?php
         }
         ?>
@@ -130,7 +133,8 @@ if(!$conn){
     <div class="col-12">
         <textarea class="form-control text" readonly maxlength="300"><?php echo $row['CONTENT']?></textarea>
     </div>
-    
+
+
     <div class="btn-box col-12">
         <button type="button" class="btn btn-outline-primary modal-btn" data-toggle="modal" data-target="#modal" id="updateBtn">수정</button>
         <button type="button" class="btn btn-outline-danger modal-btn" data-toggle="modal" data-target="#modal" id="delBtn">삭제</button>
@@ -143,7 +147,17 @@ if(!$conn){
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="delModalLabel">비밀번호 입력</h5>
+                    <?php
+                    if(isset($_SESSION["admin"])) { // 관리자 로그인시
+                        ?>
+                        <h5 class="modal-title" id="delModalLabel">수정 & 삭제</h5>
+                        <?php
+                    }else{ 
+                        ?>
+                        <h5 class="modal-title" id="delModalLabel">비밀번호 입력</h5>
+                        <?php
+                        }
+                    ?>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -151,11 +165,23 @@ if(!$conn){
                 <form id="modalform" action="" method="post">
                     <input type="hidden" name="num" value="<?php echo $row['NUM']; // 삭제나 수정시 파라메타로 넘김 ?>">
                     <div class="modal-body">
-                        <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호를 입력하세요. (10자이내)" maxlength="10" required>
+                        
+                        <?php
+                        if(isset($_SESSION["admin"])) { // 관리자 로그인시 비밀번호 미입력
+                            ?>
+                            수정 & 삭제하시겠습니까?
+                            <input type="hidden" name ="password" value="admin">
+                            <?php
+                        }else{
+                            ?>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호를 입력하세요. (10자이내)" maxlength="10" required>
+                            <?php
+                        }
+                        ?>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-                        <button type="submit" class="btn btn-primary">완료</button>
+                        <button type="submit" class="btn btn-primary">진행</button>
                     </div>
                 </form>
             </div>
@@ -171,30 +197,7 @@ if(!$conn){
 <!--bootstrap js요소 4.3.1 불러오기-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-<script>
+<!--page js요소-->
+<script src="./js/postview.js"></script>
 
-    $(function () {
-
-        function changeText() { // textarea 크기자동조절
-            $(this).height(1).height( $(this).prop('scrollHeight')+12 );
-        }
-        $(".text").on("keydown keyup", changeText);
-        $(".text").keyup();
-
-        $(".modal-btn").click(function () { // 수정, 삭제버튼 클릭시
-
-            switch ($(this).attr('id')) {
-                case 'delBtn' : // 삭제버튼이라면
-                    $("#modalform").attr("action", "./deleteprogress.php");
-                    break;
-                case 'updateBtn' : // 수정버튼이라면
-                    $("#modalform").attr("action", "./postupdate.php");
-                    break;
-            }
-
-        });
-
-    });
-
-</script>
 </html>

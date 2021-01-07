@@ -6,6 +6,14 @@
  * Time: 오후 9:20
  */
 
+
+session_start();
+
+if(isset($_SESSION["admin"])) {
+    $username = $_SESSION["admin"]; // 관리자는 id로
+}else{
+    $username = "user" . $_SERVER["REMOTE_ADDR"];// 사용자 식별은 user+ 접속 ip로
+}
 ?>
 <!DOCTYPE html>
 <html lang="ko">
@@ -41,11 +49,14 @@
     <form action="writeprogress.php" method="post">
     <div class="col-12">
         <h2>글쓰기</h2>
-        <h6>작성자 : user<?php echo $_SERVER["REMOTE_ADDR"]; // 사용자 식별은 user+ 접속 ip로 ?></h6>
+        <h6>작성자 : <?php echo $username;?></h6>
 
         <div class="mb-3">
             <label for="title" class="form-label">제목</label>
             <input type="text" class="form-control" id="title" name="title" placeholder="제목을 입력하세요 (20자이내)" maxlength="20">
+            <div class="invalid-feedback">
+                제목을 입력해주세요
+            </div>
         </div>
 
     </div>
@@ -54,19 +65,28 @@
             <div class="mb-3">
                 <label for="text" class="form-label">내용</label>
                 <textarea class="form-control text" placeholder="내용을 입력해주세요 (300자 이하)" id="text" name = "text" maxlength="300"></textarea>
+                <div class="invalid-feedback">
+                    내용을 입력해주세요.
+                </div>
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">게시글 비밀번호</label>
-                <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호를 입력하세요. (10자이내)" maxlength="10">
+                <input type="password" class="form-control" id="writepassword" name="password" placeholder="비밀번호를 입력하세요. (10자이내)" maxlength="10">
+                <div class="invalid-feedback">
+                   비밀번호를 입력해주세요.
+                </div>
             </div>
             <div class="mb-3">
                 <label for="passwordChk" class="form-label">비밀번호 확인</label>
-                <input type="password" class="form-control" id="passwordChk" name="passwordChk" placeholder="한번더 입력하세요." maxlength="20">
+                <input type="password" class="form-control" id="writepasswordChk" name="passwordChk" placeholder="한번더 입력하세요." maxlength="20">
+                <div class="invalid-feedback">
+                    동일한 비밀번호를 입력해주세요.
+                </div>
             </div>
         </div>
 
         <div class="btn-box col-12">
-            <button class="btn btn-outline-primary">작성완료</button>
+            <button id = "writeBtn" class="btn btn-secondary" disabled>작성완료</button>
         </div>
     </form>
 
@@ -79,17 +99,6 @@
 <!--bootstrap js요소 4.3.1 불러오기-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-<script>
-
-    $(function () {
-
-        function changeText() { // textarea 크기자동조절
-            $(this).height(1).height( $(this).prop('scrollHeight')+12 );
-        }
-
-        $(".text").on("keydown keyup", changeText);
-        $(".text").keyup();
-    });
-
-</script>
+<!--page js요소-->
+<script src="./js/postwrite.js"></script>
 </html>

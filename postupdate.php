@@ -5,20 +5,32 @@
  * Date: 2021-01-06
  * Time: 오후 9:20
  */
-
-if(isset($_POST['num']) && isset($_POST['password'])
-    && ((int)$_POST['num'])>0 && strlen($_POST['password'])<=10){ //파라메타 값이 유효하다면
+session_start(); // 세션사용
+if(isset($_POST['num']) && (isset($_POST['password']))
+    && ((int)$_POST['num'])>0 && mb_strlen($_POST['password'])<=10){ //파라메타 값이 유효한지
 
     $conn = mysqli_connect("localhost" , "boardadmin", "board1234", "board", "3306"); // DB 커넥션
 
-    $num = (int)$_POST['num'];
 
-    $query ="SELECT NUM, USERNAME, PASSWORD, TITLE, CONTENT , VIEWCOUNT, WRDATE , UWDATE FROM POST WHERE NUM = ? AND PASSWORD = ?"; // select 쿼리문
+
+    $num = (int)$_POST['num'];
+    if(isset($_SESSION["admin"])){ //관리자 로그인시 password 미검증
+        $query ="SELECT NUM, USERNAME, PASSWORD, TITLE, CONTENT , VIEWCOUNT, WRDATE , UWDATE FROM POST WHERE NUM = ?"; // select 쿼리문
+
+    }else{
+        $query ="SELECT NUM, USERNAME, PASSWORD, TITLE, CONTENT , VIEWCOUNT, WRDATE , UWDATE FROM POST WHERE NUM = ? AND PASSWORD = ?"; // select 쿼리문
+    }
+
+
 
     $stmt = mysqli_prepare($conn, $query); // sql injection 방지 prepare stmt 사용
 
-    mysqli_stmt_bind_param($stmt, "is", $num ,
-        $_POST['password'] ); // sql 변수에 바인딩
+    if(isset($_SESSION["admin"])){ // 관리자 로그인시
+        mysqli_stmt_bind_param($stmt, "i", $num ); // sql 변수에 바인딩
+    }else{
+        mysqli_stmt_bind_param($stmt, "is", $num ,
+            $_POST['password'] ); // sql 변수에 바인딩
+    }
 
     mysqli_stmt_execute($stmt);
 
@@ -34,7 +46,6 @@ if(isset($_POST['num']) && isset($_POST['password'])
             alert("비밀번호가 틀렸거나 해당게시글은 존재하지 않습니다. \n전 페이지로 이동합니다.");
             history.back();
         </script>
-
         <?php
         mysqli_close($conn); // 커넥션종료
         exit();
@@ -50,6 +61,7 @@ if(isset($_POST['num']) && isset($_POST['password'])
         history.back();
     </script>
     <?php
+    exit();
 }
 
 
@@ -115,7 +127,7 @@ if(isset($_POST['num']) && isset($_POST['password'])
         </div>
 
         <div class="btn-box col-12">
-            <button class="btn btn-outline-primary">수정완료</button>
+            <button id= "updateBtn" class="btn btn-outline-primary">수정완료</button>
         </div>
     </form>
 
@@ -128,17 +140,6 @@ if(isset($_POST['num']) && isset($_POST['password'])
 <!--bootstrap js요소 4.3.1 불러오기-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-<script>
-
-    $(function () {
-
-        function changeText() { // textarea 크기자동조절
-            $(this).height(1).height( $(this).prop('scrollHeight')+12 );
-        }
-
-        $(".text").on("keydown keyup", changeText);
-        $(".text").keyup();
-    });
-
-</script>
+<!--page js요소-->
+<script src ="./js/postupdate.js"></script>
 </html>

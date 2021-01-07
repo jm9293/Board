@@ -5,14 +5,13 @@
  * Date: 2021-01-05
  * Time: 오전 11:15
  */
-
+session_start(); // 세션사용
 $conn = mysqli_connect("localhost" , "boardadmin", "board1234", "board", "3306"); // DB 커넥션
 
 if(!$conn){ // 커넥션 오류시
     ?>
     <script>
-        alert("입력값이 유효하지 않거나 DB 접속의 문제가 있습니다. \n전 페이지로 이동합니다.");
-        history.back();
+        alert("입력값이 유효하지 않거나 DB 접속의 문제가 있습니다.");
     </script>
     <?php
     exit();
@@ -36,26 +35,48 @@ if(!$conn){ // 커넥션 오류시
 
     $urlQuery = ""; //현재 파라메타 유지용 문자열
 
-    if(isset($_GET["type"])&&isset($_GET["text"])&&((int)($_GET["type"]))!=0){ // 검색에 요구되는 파라메타가 존재하고 그값이 유효할때
+    $query = "SELECT count(*) FROM POST";
+
+    $searchbool =  isset($_GET["type"])&&isset($_GET["text"])&&((int)$_GET["type"])!=0; // 검색에 요구되는 파라메타가 존재하고 그값이 유효한지 여부
+
+    if($searchbool){
 
         $infotext = '"'.$_GET["text"].'"로 검색한 결과입니다.</br>';
         $type = (int)$_GET["type"];
         $text = $_GET["text"];
+        $buf_text = "%".$_GET["text"]."%"; // 입력값에 %%를 붙인 임시 문자열
         $urlQuery = "type=".$type."&text=".$_GET["text"]."&"; // 파라메타 저장
         switch ($type){
             case 1 :
-                $whereQuery =" WHERE TITLE LIKE '%".$text."%' OR CONTENT LIKE '%".$text."%'";
-
+                $whereQuery =" WHERE TITLE LIKE ? OR CONTENT LIKE ?";
+                $query.= $whereQuery;
+                $stmt = mysqli_prepare($conn, $query); // sql injection 방지 prepare stmt 사용
+                mysqli_stmt_bind_param($stmt, "ss", $buf_text,$buf_text); // sql 변수에 바인딩
                 break;
             case 2 :
-                $whereQuery =" WHERE USERNAME LIKE '%".$text."%'";
+                $whereQuery =" WHERE USERNAME LIKE ?";
+                $query.= $whereQuery;
+                $stmt = mysqli_prepare($conn, $query); // sql injection 방지 prepare stmt 사용
+                mysqli_stmt_bind_param($stmt, "s", $buf_text); // sql 변수에 바인딩
                 break;
             case 3 :
-                $whereQuery =" WHERE NUM =".$text;
+                $whereQuery =" WHERE NUM =?";
+                $query.= $whereQuery;
+                $num = (int)$_GET["text"]; // 검색입력값을 숫자로 바꿈 숫자가아닐시 0이 나오므로 검색결과 없음
+                $stmt = mysqli_prepare($conn, $query); // sql injection 방지 prepare stmt 사용
+                mysqli_stmt_bind_param($stmt, "i", $num); // sql 변수에 바인딩
                 break;
-
         }
+
+    }else{ //검색이 아닐때
+        $stmt = mysqli_prepare($conn, $query);
     }
+
+    // 게시글 개수 확인 쿼리
+
+    mysqli_stmt_execute($stmt); // 쿼리날림
+
+    $result = mysqli_stmt_get_result($stmt); // 결과받음
 
 
     if($pageNum == 0){ // 숫자가 아닌 파라메타일 경우
@@ -67,19 +88,8 @@ if(!$conn){ // 커넥션 오류시
 
         <?php
         exit();
-    }else{
-        $urlQuery.= "page=".$pageNum."&"; //파라메타유지용
     }
 
-
-
-
-
-    $query = "SELECT count(*) FROM POST".$whereQuery; // 게시글 개수 확인 쿼리
-
-
-
-    $result = mysqli_query($conn, $query); // 쿼리전송후 결과받음
 
     $postCnt = 0;
 
@@ -91,18 +101,37 @@ if(!$conn){ // 커넥션 오류시
         $query = "SELECT NUM, USERNAME, TITLE, VIEWCOUNT, WRDATE FROM POST".$whereQuery.
             " ORDER BY NUM DESC LIMIT ".($pageNum-1)*$pageRow.", $pageRow"; // 페이징을 이용한 select 쿼리문
 
+        if($searchbool){
+            switch ($type){
+                case 1 :
+                    $stmt = mysqli_prepare($conn, $query); // sql injection 방지 prepare stmt 사용
+                    mysqli_stmt_bind_param($stmt, "ss", $buf_text,$buf_text); // sql 변수에 바인딩
+                    break;
+                case 2 :
+                    $stmt = mysqli_prepare($conn, $query); // sql injection 방지 prepare stmt 사용
+                    mysqli_stmt_bind_param($stmt, "s", $buf_text); // sql 변수에 바인딩
+                    break;
+                case 3 :
+                    $num = (int)$_GET["text"]; // 검색입력값을 숫자로 바꿈 숫자가아닐시 0이 나오므로 검색결과 없음
+                    $stmt = mysqli_prepare($conn, $query); // sql injection 방지 prepare stmt 사용
+                    mysqli_stmt_bind_param($stmt, "i", $num); // sql 변수에 바인딩
+                    break;
+            }
+        }else{
+            $stmt = mysqli_prepare($conn, $query);
+        }
+        
+        mysqli_stmt_execute($stmt); // 쿼리날림
 
+        $result = mysqli_stmt_get_result($stmt); // 결과받음
 
-        $result = mysqli_query($conn, $query); // 쿼리전송후 결과받음
-
-        $maxPage = ceil($postCnt / $pageRow); // 전체 게시글수를 보여줄 ROW수로 나눈뒤 무조건 올림
+        $maxPage = ceil($postCnt / $pageRow); // 전체 게시글수를 보여줄 ROW수로 나눈뒤 무조건 올림 페이징될 전체페이지수
 
     } else { // 미존재시 종료
         $infotext = "결과를 찾을수없습니다.";
     }
 
 }
-
 
 ?>
 
@@ -150,19 +179,19 @@ if(!$conn){ // 커넥션 오류시
         <div class="col-6 col-md-4 menu">제목</div>
         <div class="col-4 col-md-2 menu">작성자</div>
         <div class="col-2 col-md-2 menu">조회</div>
-        <div class="col-10 col-md-3 menu">작성일</div>
+        <div class="col-10 col-md-3 menu">작성시간</div>
     </div>
     <?php
     if($result && mysqli_num_rows($result) > 0) {
         while ($row = mysqli_fetch_assoc($result)) { //전체 select 된 row 만큼 반복한다.
 
             ?>
-            <div class="menuname row col-12 col-md-8 textlist" onclick="location.href='./postview.php?<?php echo $urlQuery."num=".$row["NUM"]; //클릭시 해당글로이동 ?> '">
+            <div class="menuname row col-12 col-md-8 textlist" onclick="location.href='./postview.php?<?php echo $urlQuery."num=".$row["NUM"]."&page=".$pageNum; //클릭시 해당글로이동 ?> '">
                 <div class="col-2 col-md-1 text" id="text1"><?php echo $row["NUM"] ?></div>
                 <div class="col-6 col-md-4 text" id="text2"><?php echo $row["TITLE"] ?></div>
                 <div class="col-4 col-md-2 text" id="text2"><?php echo $row["USERNAME"] ?></div>
                 <div class="col-2 col-md-2 text" id="text3"><?php echo $row["VIEWCOUNT"] ?></div>
-                <div class="col-10 col-md-3 text" id="text4"><?php echo $row["WRDATE"] ?></div>
+                <div class="col-10 col-md-3 text" id="text4"><?php echo substr( $row["WRDATE"] , 0, strrpos($row["WRDATE"],":")); // 초단위 자르고 출력?></div>
             </div>
             <?php
         }
@@ -177,7 +206,7 @@ if(!$conn){ // 커넥션 오류시
     <?php
     }
     ?>
-    <br>
+    <br/>
     <div class="box_ul">
         <ul class="box_li">
 
