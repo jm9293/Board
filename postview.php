@@ -66,6 +66,19 @@ if(!$conn){
     if($result){
         $row = mysqli_fetch_assoc($result); // ROW 추출
         mysqli_free_result($result) ; // result 메모리 해제
+
+        $cookieName = 'VIEW_'.$row['NUM'];
+        
+        if(!isset($_COOKIE[$cookieName])){ // 쿠키에 조회기록이 없을때
+            // 조회수 증가
+            $query = "UPDATE POST SET VIEWCOUNT = VIEWCOUNT+1 WHERE NUM = ?";
+            $stmt = mysqli_prepare($conn, $query);
+            mysqli_stmt_bind_param($stmt, "i", $num); // sql 변수에 바인딩
+            mysqli_stmt_execute($stmt); // 쿼리날림
+            $row['VIEWCOUNT'] = (int)$row['VIEWCOUNT'] + 1; // 조회수 최신화
+            setcookie("$cookieName", "1", time() + (3600*24), "/"); // 조회수를 24시간동안 안오르도록 쿠키발급
+        }
+
         mysqli_close($conn); // 커넥션종료
     }else{
         ?>

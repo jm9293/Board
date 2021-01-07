@@ -19,7 +19,7 @@ if(isset($_POST['username']) && isset($_POST['password'])
     mysqli_stmt_bind_param($stmt, "ss", $_POST['username'] , $_POST['password'] ); // sql 변수에 바인딩
 
     mysqli_stmt_execute($stmt);
-    
+
 
     $result = mysqli_stmt_get_result($stmt); // 결과받음
 
