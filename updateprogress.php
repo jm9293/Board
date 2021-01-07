@@ -8,19 +8,20 @@
 
 $success = false; // 작업 성공하였는지
 
-if(isset($_POST['num']) && isset($_POST['password'])
-    && ((int)$_POST['num'])>0 && strlen($_POST['password'])<=10){ //파라메타 값이 유효하다면
+if(isset($_POST['title']) && isset($_POST['text'])
+    && isset($_POST['num']) && isset($_POST['password'])
+    && ((int)$_POST['num'])>0 && strlen($_POST['password'])<=10
+    && strlen($_POST['title'])<=30 && strlen($_POST['text'])<=300){ //파라메타 값이 유효하다면
 
     $conn = mysqli_connect("localhost" , "boardadmin", "board1234", "board", "3306"); // DB 커넥션
 
     $num = (int)$_POST['num'];
 
-    $query ="DELETE FROM POST WHERE NUM = ? AND PASSWORD = ?"; // insert 쿼리문
+    $query ="UPDATE POST SET TITLE = ?, CONTENT = ?, UWDATE = NOW() WHERE NUM = ? AND  PASSWORD = ?"; // insert 쿼리문
 
     $stmt = mysqli_prepare($conn, $query); // sql injection 방지 prepare stmt 사용
 
-    mysqli_stmt_bind_param($stmt, "is", $num ,
-        $_POST['password'] ); // sql 변수에 바인딩
+    mysqli_stmt_bind_param($stmt, "ssis",$_POST['title'] ,$_POST['text'], $num , $_POST['password'] ); // sql 변수에 바인딩
 
     mysqli_stmt_execute($stmt);
 
@@ -33,11 +34,11 @@ if(isset($_POST['num']) && isset($_POST['password'])
 }
 
 if($success){
-    if($resInt == 1){ // 삭제한 row가 있을때
+    if($resInt == 1){ // 업데이트한 row가 있을때
     ?>
     <script>
-        alert("게시글 삭제 완료\n게시판으로 이동합니다.");
-        location.href = "./list.php";
+        alert("게시글 수정 완료\n해당 게시글로 이동합니다.");
+        location.href = "./postview.php?num=<?php echo $_POST['num']; ?>";
     </script>
 
     <?php

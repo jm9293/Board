@@ -133,8 +133,8 @@ if(!$conn){
     
     <div class="btn-box col-12">
         <button type="button" class="btn btn-outline-primary modal-btn" data-toggle="modal" data-target="#modal" id="updateBtn">수정</button>
-        <button type="button" class="btn btn-outline-primary modal-btn" data-toggle="modal" data-target="#modal" id="delBtn">삭제</button>
-        <button type="button" class="btn btn-outline-primary" onclick="location.href = './list.php<?php echo $urlQuery ?>'">목록으로</button>
+        <button type="button" class="btn btn-outline-danger modal-btn" data-toggle="modal" data-target="#modal" id="delBtn">삭제</button>
+        <button type="button" class="btn btn-outline-secondary" onclick="location.href = './list.php<?php echo $urlQuery ?>'">목록으로</button>
     </div>
 
 
@@ -149,7 +149,7 @@ if(!$conn){
                     </button>
                 </div>
                 <form id="modalform" action="" method="post">
-                    <input type="hidden" name="num" value="<?php echo $row['NUM']?>">
+                    <input type="hidden" name="num" value="<?php echo $row['NUM']; // 삭제나 수정시 파라메타로 넘김 ?>">
                     <div class="modal-body">
                         <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호를 입력하세요. (10자이내)" maxlength="10" required>
                     </div>

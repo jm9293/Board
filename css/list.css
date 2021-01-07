@@ -13,6 +13,11 @@
     text-align: center;
 }
 
+.btn-box{
+    margin: auto;
+    text-align: right;
+}
+
 .menu{
     text-align: center;
     height: 45px;

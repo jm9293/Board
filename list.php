@@ -145,7 +145,7 @@ if(!$conn){ // 커넥션 오류시
 
     </div>
     <br>
-    <div class="menuname menuborder row col-12 col-md-8 alert-primary">
+    <div class="menuname menuborder row col-12 col-md-8 alert-secondary">
         <div class="col-2 col-md-1 menu">No</div>
         <div class="col-6 col-md-4 menu">제목</div>
         <div class="col-4 col-md-2 menu">작성자</div>
@@ -201,7 +201,7 @@ if(!$conn){ // 커넥션 오류시
             for ($i = 1 ; $i <= $maxPage ; $i++) { // 1부터 max 페이지까지 li 생성
 
                 ?>
-                <li class="paging"><a <?php if($pageNum===$i) {echo 'class = "active"' ; } // 현재페이지일 경우 a에 active 클래스를줌 ?>
+                <li class="paging"><a <?php if($pageNum===$i) {echo 'class = "bg-secondary text-white"' ; } // 현재페이지일 경우 a에 active 클래스를줌 ?>
                         href="list.php?<?php echo $urlQuery."page=".$i; ?>"><?php echo $i; ?></a></li>
                 <?php
             }
@@ -210,6 +210,10 @@ if(!$conn){ // 커넥션 오류시
                     href="list.php?<?php echo $urlQuery."page=".$frontPage; ?>">다음</a></li>
         </ul>
     </div>
+    <div class="btn-box col-12 col-md-8">
+        <button type="button" class="btn btn-outline-secondary" onclick="location.href = './postwrite.php'">글쓰기</button>
+    </div>
+
     <form action="./list.php">
     <div class="searchbox col-12 col-md-8 col-lg-6 row">
         <!--검색 박스-->

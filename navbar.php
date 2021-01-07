@@ -8,7 +8,7 @@
 ?>
 
 <nav class="navbar navbar-expand-md navbar-light bg-white navbar-u col-12 col-md-8">
-    <a class="navbar-brand navbar-logo" href="./list.php">Board</a>
+    <a class="navbar-brand navbar-logo text-secondary" href="./list.php">Board</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -26,7 +26,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <button class="btn btn-outline-primary" type="button" onclick="" data-toggle="modal" data-target="#loginmodal">관리자</button>
+                <button class="btn btn-outline-secondary" type="button" onclick="" data-toggle="modal" data-target="#loginmodal">관리자</button>
             </li>
         </ul>
     </div>
