@@ -68,7 +68,7 @@ if(!$conn){
         mysqli_free_result($result) ; // result 메모리 해제
 
         $cookieName = 'VIEW_'.$row['NUM'];
-        
+
         if(!isset($_COOKIE[$cookieName])){ // 쿠키에 조회기록이 없을때
             // 조회수 증가
             $query = "UPDATE POST SET VIEWCOUNT = VIEWCOUNT+1 WHERE NUM = ?";
