@@ -164,8 +164,9 @@ history.back();
     include "navbar.php";
     ?>
     </div>
-
     <!--네비바 끝-->
+
+
 
     <!--메인 컨텐트 영역-->
     <div class="content">

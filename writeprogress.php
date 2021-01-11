@@ -29,7 +29,9 @@ if(isset($_POST['title']) && isset($_POST['text'])
     $stmt = mysqli_prepare($conn, $query); // sql injection 방지 prepare stmt 사용
 
     mysqli_stmt_bind_param($stmt, "ssss", $username,
-        $_POST['password'],$_POST['title'],$_POST['text'] ); // sql 변수에 바인딩
+        $_POST['password'],
+        htmlspecialchars($_POST[title], ENT_HTML5 | ENT_QUOTES | ENT_SUBSTITUTE | ENT_DISALLOWED),
+        htmlspecialchars($_POST[text], ENT_HTML5 | ENT_QUOTES | ENT_SUBSTITUTE | ENT_DISALLOWED) ); // sql 변수에 바인딩 , xss 공격대비 htmlspecialchars 적용
 
     mysqli_stmt_execute($stmt);
 

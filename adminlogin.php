@@ -11,7 +11,6 @@ if(isset($_POST['username']) && isset($_POST['password'])
 
     $conn = mysqli_connect("localhost" , "boardadmin", "board1234", "board", "3306"); // DB 커넥션
 
-
     $query ="SELECT ID FROM ADMIN WHERE ID = ? AND PASSWORD = ?"; // select 쿼리문
 
     $stmt = mysqli_prepare($conn, $query); // sql injection 방지 prepare stmt 사용
@@ -19,7 +18,6 @@ if(isset($_POST['username']) && isset($_POST['password'])
     mysqli_stmt_bind_param($stmt, "ss", $_POST['username'] , $_POST['password'] ); // sql 변수에 바인딩
 
     mysqli_stmt_execute($stmt);
-
 
     $result = mysqli_stmt_get_result($stmt); // 결과받음
 
