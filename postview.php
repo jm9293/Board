@@ -12,12 +12,12 @@ session_start(); // 세션사용
 
 if(!$conn){
     ?>
-    <script>
-        alert("입력값이 유효하지 않거나 DB 접속의 문제가 있습니다. \n전 페이지로 이동합니다.");
-        history.back();
-    </script>
+<script>
+alert("입력값이 유효하지 않거나 DB 접속의 문제가 있습니다. \n전 페이지로 이동합니다.");
+history.back();
+</script>
 
-    <?php
+<?php
     exit();
 
 }else{
@@ -82,12 +82,12 @@ if(!$conn){
         mysqli_close($conn); // 커넥션종료
     }else{
         ?>
-        <script>
-            alert("입력값이 유효하지 않거나 DB 접속의 문제가 있습니다. \n전 페이지로 이동합니다.");
-            history.back();
-        </script>
+<script>
+alert("입력값이 유효하지 않거나 DB 접속의 문제가 있습니다. \n전 페이지로 이동합니다.");
+history.back();
+</script>
 
-        <?php
+<?php
         mysqli_close($conn); // 커넥션종료
         exit();
     }
@@ -99,11 +99,13 @@ if(!$conn){
 
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- bootstrap 4.3.1 css요소 -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <!-- 기본 폰트 구글 Noto Sans 굵기 400,500,900 -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;900&display=swap" rel="stylesheet">
     <!-- 기본 css -->
@@ -116,51 +118,55 @@ if(!$conn){
 
     <title><?php echo $row['TITLE']?></title>
 </head>
+
 <body>
-<!--네비바 시작-->
-<div id="navbar">
-    <?php
+    <!--네비바 시작-->
+    <div id="navbar">
+        <?php
     include "navbar.php";
     ?>
-</div>
+    </div>
 
-<!--네비바 끝-->
+    <!--네비바 끝-->
 
-<!--메인 컨텐트 영역-->
-<div class="content col-12 col-md-8 row">
-    <div class="col-12">
-        <h6><?php echo $row['NUM']?>번 게시물 보기 </h6>
-        <h2>제목 : <?php echo $row['TITLE']?></h2>
-        <h6>작성자 : <?php echo $row['USERNAME']?> </h6>
-        <h6>조회수 : <?php echo $row['VIEWCOUNT']?></h6>
-        <h6>작성시간 : <?php echo substr( $row["WRDATE"] , 0, strrpos($row["WRDATE"],":")); // 초단위 자르고 출력?></h6>
-        <?php
+    <!--메인 컨텐트 영역-->
+    <div class="content col-12 col-md-8 row">
+        <div class="col-12">
+            <h6><?php echo $row['NUM']?>번 게시물 보기 </h6>
+            <h2>제목 : <?php echo $row['TITLE']?></h2>
+            <h6>작성자 : <?php echo $row['USERNAME']?> </h6>
+            <h6>조회수 : <?php echo $row['VIEWCOUNT']?></h6>
+            <h6>작성시간 : <?php echo substr( $row["WRDATE"] , 0, strrpos($row["WRDATE"],":")); // 초단위 자르고 출력?></h6>
+            <?php
         if($row['UWDATE']!=null) { // 수정일이 존재한다면 출력
             ?>
             <h6>수정시간 : <?php echo substr( $row["UWDATE"] , 0, strrpos($row["UWDATE"],":"));?></h6>
             <?php
         }
         ?>
-    </div>
+        </div>
 
-    <div class="col-12">
-        <textarea class="form-control text" readonly maxlength="300"><?php echo $row['CONTENT']?></textarea>
-    </div>
-
-
-    <div class="btn-box col-12">
-        <button type="button" class="btn btn-outline-primary modal-btn" data-toggle="modal" data-target="#modal" id="updateBtn">수정</button>
-        <button type="button" class="btn btn-outline-danger modal-btn" data-toggle="modal" data-target="#modal" id="delBtn">삭제</button>
-        <button type="button" class="btn btn-outline-secondary" onclick="location.href = './list.php<?php echo $urlQuery ?>'">목록으로</button>
-    </div>
+        <div class="col-12">
+            <textarea class="form-control text" readonly maxlength="300"><?php echo $row['CONTENT']?></textarea>
+        </div>
 
 
-    <!-- 비밀번호 입력 모달창 -->
-    <div class="modal fade" id="modal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <?php
+        <div class="btn-box col-12">
+            <button type="button" class="btn btn-outline-primary modal-btn" data-toggle="modal" data-target="#modal"
+                id="updateBtn">수정</button>
+            <button type="button" class="btn btn-outline-danger modal-btn" data-toggle="modal" data-target="#modal"
+                id="delBtn">삭제</button>
+            <button type="button" class="btn btn-outline-secondary"
+                onclick="location.href = './list.php<?php echo $urlQuery ?>'">목록으로</button>
+        </div>
+
+
+        <!-- 비밀번호 입력 모달창 -->
+        <div class="modal fade" id="modal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <?php
                     if(isset($_SESSION["admin"])) { // 관리자 로그인시
                         ?>
                         <h5 class="modal-title" id="delModalLabel">수정 & 삭제</h5>
@@ -171,45 +177,50 @@ if(!$conn){
                         <?php
                         }
                     ?>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form id="modalform" action="" method="post">
-                    <input type="hidden" name="num" value="<?php echo $row['NUM']; // 삭제나 수정시 파라메타로 넘김 ?>">
-                    <div class="modal-body">
-                        
-                        <?php
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form id="modalform" action="" method="post">
+                        <input type="hidden" name="num" value="<?php echo $row['NUM']; // 삭제나 수정시 파라메타로 넘김 ?>">
+                        <div class="modal-body">
+
+                            <?php
                         if(isset($_SESSION["admin"])) { // 관리자 로그인시 비밀번호 미입력
                             ?>
                             수정 & 삭제하시겠습니까?
-                            <input type="hidden" name ="password" value="admin">
+                            <input type="hidden" name="password" value="admin">
                             <?php
                         }else{
                             ?>
-                            <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호를 입력하세요. (10자이내)" maxlength="10" required>
+                            <input type="password" class="form-control" id="password" name="password"
+                                placeholder="비밀번호를 입력하세요. (10자이내)" maxlength="10" required>
                             <?php
                         }
                         ?>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-                        <button type="submit" class="btn btn-primary">진행</button>
-                    </div>
-                </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                            <button type="submit" class="btn btn-primary">진행</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
+
     </div>
 
-</div>
-
-<!--메인 컨텐트 끝-->
+    <!--메인 컨텐트 끝-->
 
 </body>
 
 <!--bootstrap js요소 4.3.1 불러오기-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+</script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+</script>
 <!--page js요소-->
 <script src="./js/postview.js"></script>
 

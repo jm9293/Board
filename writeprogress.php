@@ -41,19 +41,19 @@ if(isset($_POST['title']) && isset($_POST['text'])
 
 if($success){
     ?>
-    <script>
-        alert("<?php echo mysqli_stmt_affected_rows($stmt); ?>개의 게시글 작성완료\n작성된 게시글로 이동합니다.");
-        location.href = "./postview.php?num=<?php echo mysqli_insert_id($conn); ?>";
-    </script>
+<script>
+alert("<?php echo mysqli_stmt_affected_rows($stmt); ?>개의 게시글 작성완료\n작성된 게시글로 이동합니다.");
+location.href = "./postview.php?num=<?php echo mysqli_insert_id($conn); ?>";
+</script>
 
-    <?php
+<?php
     mysqli_close($conn); // 커넥션종료
 }else{
     ?>
-    <script>
-        alert("입력값이 유효하지 않거나 DB 접속의 문제가 있습니다. \n전 페이지로 이동합니다.");
-        history.back();
-    </script>
-    <?php
+<script>
+alert("입력값이 유효하지 않거나 DB 접속의 문제가 있습니다. \n전 페이지로 이동합니다.");
+history.back();
+</script>
+<?php
 }
 ?>

@@ -33,39 +33,30 @@ if(isset($_POST['username']) && isset($_POST['password'])
 
 
         ?>
-        <script>
-            alert("로그인성공\n<?php echo $row['ID'] ?>님 환영합니다.");
-            location.href = document.referrer;
-        </script>
+<script>
+alert("로그인성공\n<?php echo $row['ID'] ?>님 환영합니다.");
+location.href = document.referrer;
+</script>
 
-        <?php
+<?php
 
     }else{
         ?>
-        <script>
-            alert("아이디나 비밀번호가 맞지 않습니다. \n전 페이지로 이동합니다.");
-            history.back();
-        </script>
+<script>
+alert("아이디나 비밀번호가 맞지 않습니다. \n전 페이지로 이동합니다.");
+history.back();
+</script>
 
-        <?php
+<?php
         mysqli_close($conn); // 커넥션종료
         exit();
     }
 
-
-
-
-
-
-
 }else { // 파라메타 유효하지 않을시
     ?>
-    <script>
-        alert("입력값이 유효하지 않습니다. \n이전 페이지로 이동합니다.");
-        history.back();
-    </script>
-    <?php
+<script>
+alert("입력값이 유효하지 않습니다. \n이전 페이지로 이동합니다.");
+history.back();
+</script>
+<?php
 }
-
-
-

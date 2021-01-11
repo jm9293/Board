@@ -6,7 +6,7 @@
  * Time: 오후 9:37
  */
 session_start(); // 세션사용
-$success = false; // 작업 성공하였는지
+$success = false; // 작업 성공하였는지 
 
 if(isset($_POST['num']) && isset($_POST['password'])
     && ((int)$_POST['num'])>0 &&mb_strlen($_POST['password'])<=10){ //파라메타 값이 유효하다면
@@ -42,28 +42,28 @@ if(isset($_POST['num']) && isset($_POST['password'])
 if($success){
     if($resInt == 1){ // 삭제한 row가 있을때
     ?>
-    <script>
-        alert("게시글 삭제 완료\n게시판으로 이동합니다.");
-        location.href = "./list.php";
-    </script>
+<script>
+alert("게시글 삭제 완료\n게시판으로 이동합니다.");
+location.href = "./list.php";
+</script>
 
-    <?php
+<?php
     }else{
         ?>
-        <script>
-            alert("비밀번호가 틀렸거나 입력한 값이 유효하지 않습니다. \n이전페이지로 이동합니다.");
-            history.back();
-        </script>
+<script>
+alert("비밀번호가 틀렸거나 입력한 값이 유효하지 않습니다. \n이전페이지로 이동합니다.");
+history.back();
+</script>
 
-        <?php
+<?php
     }
     mysqli_close($conn); // 커넥션종료
 }else{ // 파라메타 유효하지 않을때
     ?>
-    <script>
-        alert("입력값이 유효하지 않거나 DB 접속의 문제가 있습니다. \n이전 페이지로 이동합니다.");
-        history.back();
-    </script>
-    <?php
+<script>
+alert("입력값이 유효하지 않거나 DB 접속의 문제가 있습니다. \n이전 페이지로 이동합니다.");
+history.back();
+</script>
+<?php
 }
 ?>

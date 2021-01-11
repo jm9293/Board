@@ -45,29 +45,29 @@ if(isset($_POST['title']) && isset($_POST['text'])
 if($success){
     if($resInt == 1){ // 업데이트한 row가 있을때
     ?>
-    <script>
-        alert("게시글 수정 완료\n해당 게시글로 이동합니다.");
-        location.href = "./postview.php?num=<?php echo $_POST['num']; ?>";
-    </script>
+<script>
+alert("게시글 수정 완료\n해당 게시글로 이동합니다.");
+location.href = "./postview.php?num=<?php echo $_POST['num']; ?>";
+</script>
 
-    <?php
+<?php
     }else{
         ?>
-        <script>
-            alert("비밀번호가 틀렸거나 입력한 값이 유효하지 않습니다. \n이전페이지로 이동합니다.");
-            history.back();
-        </script>
+<script>
+alert("비밀번호가 틀렸거나 입력한 값이 유효하지 않습니다. \n이전페이지로 이동합니다.");
+history.back();
+</script>
 
-        <?php
+<?php
     }
     mysqli_close($conn); // 커넥션종료
     exit();
 }else{ // 파라메타 유효하지 않을때
     ?>
-    <script>
-        alert("입력값이 유효하지 않거나 DB 접속의 문제가 있습니다. \n이전 페이지로 이동합니다.");
-        history.back();
-    </script>
-    <?php
+<script>
+alert("입력값이 유효하지 않거나 DB 접속의 문제가 있습니다. \n이전 페이지로 이동합니다.");
+history.back();
+</script>
+<?php
 }   exit();
 ?>
